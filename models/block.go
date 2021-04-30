@@ -40,7 +40,7 @@ type Block struct {
 }
 
 // 2 call
-func (b *Block) RecvReq() error {
+func (b *Block) SendRecvReq() error {
 	if b.Type != 2 {
 		return errors.New("block is not to be recovered")
 	}
@@ -63,7 +63,7 @@ func (b *Block) RecvReq() error {
 				MessageId:   GetRandomId(),
 				From:        b.Index,
 				To:          BlockChain[i].Index,
-				MessageName: "RecvReq",
+				MessageName: "SendRecvReq",
 				Timestamp:   time.Now().String(),
 			},
 			Token:     b.Token,
@@ -80,7 +80,7 @@ func (b *Block) RecvReq() error {
 }
 
 // 0+1 call
-func (b *Block) RecvVerifyReq(req RecoverReq) error {
+func (b *Block) SendRecvVerifyReq(req RecoverReq) error {
 	if b.Type == 2 {
 		return errors.New("block is not allowed to send recover verify request")
 	}
@@ -89,13 +89,15 @@ func (b *Block) RecvVerifyReq(req RecoverReq) error {
 		flag = false
 	}
 
+
+
 	for _, idx := range req.BlockList {
 		rq := &RecoverVerifyReq{
 			BaseMessage: BaseMessage{
 				MessageId:   GetRandomId(),
 				From:        b.Index,
 				To:          BlockChain[idx].Index,
-				MessageName: "RecvVerifyReq",
+				MessageName: "SendRecvVerifyReq",
 				Timestamp:   time.Now().String(),
 			},
 			ReqId:     req.MessageId,
@@ -103,6 +105,8 @@ func (b *Block) RecvVerifyReq(req RecoverReq) error {
 			RecvBlock: req.From,
 			BlockList: req.BlockList,
 		}
+
+		BlockChain[idx].Type = 1
 
 		err := SendMsg(BlockChain[rq.To].Addr, rq)
 		if err != nil {
@@ -113,7 +117,7 @@ func (b *Block) RecvVerifyReq(req RecoverReq) error {
 }
 
 // 1 call
-func (b *Block) RecvRes(req []RecoverVerifyReq) error {
+func (b *Block) SendRecvRes(req []RecoverVerifyReq) error {
 	if b.Type != 1 {
 		return errors.New("block is not recover node")
 	}
@@ -126,7 +130,7 @@ func (b *Block) RecvRes(req []RecoverVerifyReq) error {
 			MessageId:   GetRandomId(),
 			From:        b.Index,
 			To:          req[0].RecvBlock,
-			MessageName: "RecvRes",
+			MessageName: "SendRecvRes",
 			Timestamp:   time.Now().String(),
 		},
 		ReqId:     req[0].ReqId,
@@ -138,11 +142,10 @@ func (b *Block) RecvRes(req []RecoverVerifyReq) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
-func (b *Block) RecvMd5Req(res []RecoverRes) error {
+func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 	if len(res) != len(res[0].BlockList) {
 		return errors.New("do not get enough recover replay")
 	}
@@ -150,13 +153,14 @@ func (b *Block) RecvMd5Req(res []RecoverRes) error {
 	map1 := make(map[int]int)
 	map2 := make(map[int]int)
 	map3 := make(map[int]int)
-
+	fmt.Println("aa")
 	for i := 0; i < sliceNum; i++ {
 		map1[i] = i
 		map2[i] = i
 		map3[i] = i
 	}
 
+	fmt.Println("bb")
 	for i := 0; i < len(res); i++ {
 		sliceTmp := make(map[int]int)
 		for key := range map1 {
@@ -211,7 +215,7 @@ func (b *Block) RecvMd5Req(res []RecoverRes) error {
 				MessageId:   GetRandomId(),
 				From:        b.Index,
 				To:          res[0].BlockList[i],
-				MessageName: "RecvMd5Req",
+				MessageName: "SendRecvMd5Req",
 				Timestamp:   time.Now().String(),
 			},
 			dataSlice: dataSlice,
@@ -221,11 +225,11 @@ func (b *Block) RecvMd5Req(res []RecoverRes) error {
 			return err
 		}
 	}
-
+	fmt.Println("ccc")
 	return nil
 }
 
-func (b *Block) RecvMd5Res(req RecoverMd5Req) error {
+func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 	data := []byte(b.Data)
 	for idx, e := range req.dataSlice {
 		dataSlc := data[e.offset : e.offset+e.size]
@@ -237,7 +241,7 @@ func (b *Block) RecvMd5Res(req RecoverMd5Req) error {
 			MessageId:   GetRandomId(),
 			From:        b.Index,
 			To:          req.From,
-			MessageName: "RecvMd5Res",
+			MessageName: "SendRecvMd5Res",
 			Timestamp:   time.Now().String(),
 		},
 		dataSlice: req.dataSlice,

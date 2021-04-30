@@ -54,9 +54,18 @@ func forward(data []byte) error {
 	log.Printf("[Info]:unmarshal ok")
 	log.Printf("[Info]:message name is %v", rev["MessageName"])
 	switch rev["MessageName"].(string) {
-	case "RecvReq":
-		err = RecvVerifyReq(data)
+	case "SendRecvReq":
+		err = ServeRecvReq(data)
+	case "SendRecvVerifyReq":
+		if len(RecvVerifyList) == 0 {
+			go TryServeRecvVerifyReq()
+		}
+		err = ServeRecvVerifyReq(data)
+	case "SendRecvRes":
+		err = ServeRecvRes(data)
 	}
+
+
 
 	if err != nil {
 		return err
