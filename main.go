@@ -20,12 +20,11 @@ func calculateHash(block Block) string {
 	return hex.EncodeToString(hashed)
 }
 
-func addBlock(data string, port string) (Block, error) {
+func addBlock(idx int,data string, port string, lon string, lat string) (Block, error) {
 	var newBlock Block
 	newBlock.Timestamp = time.Now().String()
 	newBlock.Data = data
-	newBlock.Lon = "0"
-	newBlock.Lat = "0"
+
 
 	newBlock.Addr = Address{
 		Ip:   "127.0.0.1",
@@ -39,22 +38,25 @@ func addBlock(data string, port string) (Block, error) {
 
 	if BlockChain == nil || len(BlockChain) == 0 {
 		BlockChain = make([]Block, 0)
-		newBlock.Index = 0
+		newBlock.Index = idx
 		newBlock.PreHash = ""
+		newBlock.Lon = "9999"
+		newBlock.Lat = "9999"
 		newBlock.Hash = calculateHash(newBlock)
 		BlockChain = append(BlockChain, newBlock)
 		newBlock.Data = ""
 
-		_, err := addBlock(data,port)
+		_, err := addBlock(idx,data,port,lon,lat)
 		if err != nil {
 			return Block{},err
 		}
+		BlockChain = BlockChain[1:]
 	} else {
 		oldBlock := BlockChain[len(BlockChain)-1]
 		newBlock.Id = strconv.Itoa(oldBlock.Index + 1)
-		newBlock.Index = oldBlock.Index + 1
-
-
+		newBlock.Index = idx
+		newBlock.Lon = lon
+		newBlock.Lat = lat
 		newBlock.PreHash = oldBlock.Hash
 		newBlock.Hash = calculateHash(newBlock)
 		BlockChain = append(BlockChain, newBlock)
@@ -66,34 +68,47 @@ func main() {
 	if len(os.Args) < 2 {
 		log.Println("[error]:port is not found")
 	}
-	Index = os.Args[1]
+	Index = "9"
 	Port = fmt.Sprintf("800%v",Index)
 
 	var err error
-
-
-
-	_, err = addBlock("aaaaaaafasdfasdfasdf", "8001")
+	_, err = addBlock(0,"aaaaaaafasdfasdfasdf", "8000","1","2")
 	if err != nil {
 		log.Printf("[error]:%v",err)
 	}
-	_, err = addBlock("aaaaaaafasdfasdfasdf", "8002")
+	_, err = addBlock(1,"aaaaaaafasdfasdfasdf", "8001","2","6")
 	if err != nil {
 		log.Printf("[error]:%v",err)
 	}
-	_, err = addBlock("aaaaaaafasdfasdfasdf", "8003")
+	_, err = addBlock(2,"aaaaaaafasdfasdfasdf", "8002","7","3")
 	if err != nil {
 		log.Printf("[error]:%v",err)
 	}
-	_, err = addBlock("aaaaaaafasdfasdfasdf", "8004")
+	_, err = addBlock(3,"aaaaaaafasdfasdfasdf", "8003","10","2")
 	if err != nil {
 		log.Printf("[error]:%v",err)
 	}
-	_, err = addBlock("aaaaaaafasdfasdfasdf", "8005")
+	_, err = addBlock(4,"aaaaaaafasdfasdfasdf", "8004","15","2")
 	if err != nil {
 		log.Printf("[error]:%v",err)
 	}
-	_, err = addBlock("aaaaaaafasdfasdfasdf", "8006")
+	_, err = addBlock(5,"aaaaaaafasdfasdfasdf", "8005","1","21")
+	if err != nil {
+		log.Printf("[error]:%v",err)
+	}
+	_, err = addBlock(6,"aaaaaaafasdfasdfasdf", "8006","10","22")
+	if err != nil {
+		log.Printf("[error]:%v",err)
+	}
+	_, err = addBlock(7,"aaaaaaafasdfasdfasdf", "8007","18","21")
+	if err != nil {
+		log.Printf("[error]:%v",err)
+	}
+	_, err = addBlock(8,"aaaaaaafasdfasdfasdf", "8008","4","9")
+	if err != nil {
+		log.Printf("[error]:%v",err)
+	}
+	_, err = addBlock(9,"aaaaaaafasdfasdfasdf", "8009","12","22")
 	if err != nil {
 		log.Printf("[error]:%v",err)
 	}

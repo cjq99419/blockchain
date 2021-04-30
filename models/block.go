@@ -189,7 +189,7 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 			}
 		}
 
-		sliceSize := res[0].Size / 10
+		sliceSize := res[0].Size / int64(sliceNum)
 
 		var dataSlice [3]DataSlice
 		var j int
