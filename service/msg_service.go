@@ -20,12 +20,10 @@ func ServeRecvReq(data []byte) error {
 		return err
 	}
 
-	idx,err := strconv.Atoi(models.Index)
+	idx, err := strconv.Atoi(models.Index)
 	if err != nil {
 		return err
 	}
-
-
 
 	log.Printf("[Info]:unmarshal ok %v", req)
 	err = models.BlockChain[idx].SendRecvVerifyReq(*req)
@@ -46,7 +44,7 @@ func ServeRecvVerifyReq(data []byte) error {
 		return err
 	}
 	RecvVerifyList = append(RecvVerifyList, *req)
-	log.Printf("[Info]:get replay : %v", len(RecvVerifyList) - 1)
+	log.Printf("[Info]:get replay : %v", len(RecvVerifyList)-1)
 	return nil
 }
 
@@ -55,8 +53,8 @@ func TryServeRecvVerifyReq() error {
 	return recvRes()
 }
 
-func recvRes() error{
-	idx,err := strconv.Atoi(models.Index)
+func recvRes() error {
+	idx, err := strconv.Atoi(models.Index)
 	if err != nil {
 		return err
 	}
@@ -82,7 +80,7 @@ func ServeRecvRes(data []byte) error {
 
 	RecvNum = len(res.BlockList)
 
-	idx,err := strconv.Atoi(models.Index)
+	idx, err := strconv.Atoi(models.Index)
 	if err != nil {
 		return err
 	}
@@ -104,7 +102,7 @@ func ServeRecvMd5Req(data []byte) error {
 		return err
 	}
 
-	idx,err := strconv.Atoi(models.Index)
+	idx, err := strconv.Atoi(models.Index)
 	if err != nil {
 		return err
 	}

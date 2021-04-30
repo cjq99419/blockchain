@@ -37,7 +37,7 @@ func UpdateDist(idx int) error {
 }
 
 func calculate(idx1, idx2 int, redo bool) (float32, error) {
-	if Dist[idx2]!= nil && Dist[idx2][idx1] != 0 && !redo {
+	if Dist[idx2] != nil && Dist[idx2][idx1] != 0 && !redo {
 		return Dist[idx2][idx1], nil
 	}
 	if idx2 == idx1 {

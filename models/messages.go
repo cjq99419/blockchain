@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/rand"
 	"net"
 	"time"
@@ -52,12 +53,16 @@ type RecoverRes struct {
 
 type RecoverMd5Req struct {
 	BaseMessage
-	dataSlice [3]DataSlice
+	offset [3]int64
+	size   [3]int64
+	md5    [3]string
 }
 
 type RecoverMd5Res struct {
 	BaseMessage
-	dataSlice [3]DataSlice
+	offset [3]int64
+	size   [3]int64
+	md5    [3]string
 }
 
 type VerifyMd5Req struct {
@@ -79,6 +84,7 @@ func SendMsg(addr Address, v interface{}) error {
 	if err != nil {
 		return err
 	}
+	log.Println(string(data))
 	_, err = conn.Write(data)
 	if err != nil {
 		return err

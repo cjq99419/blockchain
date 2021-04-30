@@ -10,9 +10,9 @@ import (
 
 var RecvNum int
 
-func StartHttpService(port string) error{
-	localAddress, _ := net.ResolveTCPAddr("tcp4", fmt.Sprintf("127.0.0.1:%v",port))//定义一个本机IP和端口。
-	var tcpListener, err = net.ListenTCP("tcp", localAddress)       //在刚定义好的地址上进监听请求。
+func StartHttpService(port string) error {
+	localAddress, _ := net.ResolveTCPAddr("tcp4", fmt.Sprintf("127.0.0.1:%v", port)) //定义一个本机IP和端口。
+	var tcpListener, err = net.ListenTCP("tcp", localAddress)                        //在刚定义好的地址上进监听请求。
 	if err != nil {
 		return err
 	}
@@ -26,17 +26,17 @@ func StartHttpService(port string) error{
 			return err
 		}
 		var remoteAddr = conn.RemoteAddr() //获取连接到的对像的IP地址。
-		log.Printf("[Info]:connect to %v",remoteAddr.String())
+		log.Printf("[Info]:connect to %v", remoteAddr.String())
 		bys, err := ioutil.ReadAll(conn) //读取对方发来的内容。
 		if err != nil {
 			return err
 		}
-		log.Printf("[Info]:get message :%v",string(bys))
+		log.Printf("[Info]:get message :%v", string(bys))
 
 		// 服务转发
 		err = forward(bys)
 		if err != nil {
-			log.Printf("[err]:%v",err)
+			log.Printf("[err]:%v", err)
 		}
 		conn.Write([]byte("hello, Nice to meet you, my name is SongXingzhu")) //尝试发送消息。
 		conn.Close()
@@ -49,7 +49,7 @@ func forward(data []byte) error {
 	rev := make(map[string]interface{})
 	var err error
 
-	err = json.Unmarshal(data,&rev)
+	err = json.Unmarshal(data, &rev)
 	if err != nil {
 		return err
 	}
@@ -71,11 +71,8 @@ func forward(data []byte) error {
 		err = ServeRecvMd5Res(data)
 	}
 
-
-
 	if err != nil {
 		return err
 	}
 	return nil
 }
-

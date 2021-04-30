@@ -20,11 +20,10 @@ func calculateHash(block Block) string {
 	return hex.EncodeToString(hashed)
 }
 
-func addBlock(idx int,data string, port string, lon string, lat string) (Block, error) {
+func addBlock(idx int, data string, port string, lon string, lat string) (Block, error) {
 	var newBlock Block
 	newBlock.Timestamp = time.Now().String()
 	newBlock.Data = data
-
 
 	newBlock.Addr = Address{
 		Ip:   "127.0.0.1",
@@ -34,7 +33,6 @@ func addBlock(idx int,data string, port string, lon string, lat string) (Block, 
 	newBlock.Token = "safe token"
 
 	newBlock.Type = 0
-
 
 	if BlockChain == nil || len(BlockChain) == 0 {
 		BlockChain = make([]Block, 0)
@@ -46,9 +44,9 @@ func addBlock(idx int,data string, port string, lon string, lat string) (Block, 
 		BlockChain = append(BlockChain, newBlock)
 		newBlock.Data = ""
 
-		_, err := addBlock(idx,data,port,lon,lat)
+		_, err := addBlock(idx, data, port, lon, lat)
 		if err != nil {
-			return Block{},err
+			return Block{}, err
 		}
 		BlockChain = BlockChain[1:]
 	} else {
@@ -69,48 +67,48 @@ func main() {
 		log.Println("[error]:port is not found")
 	}
 	Index = "9"
-	Port = fmt.Sprintf("800%v",Index)
+	Port = fmt.Sprintf("800%v", Index)
 
 	var err error
-	_, err = addBlock(0,"aaaaaaafasdfasdfasdf", "8000","1","2")
+	_, err = addBlock(0, "aaaaaaafasdfasdfasdf", "8000", "1", "2")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
-	_, err = addBlock(1,"aaaaaaafasdfasdfasdf", "8001","2","6")
+	_, err = addBlock(1, "aaaaaaafasdfasdfasdf", "8001", "2", "6")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
-	_, err = addBlock(2,"aaaaaaafasdfasdfasdf", "8002","7","3")
+	_, err = addBlock(2, "aaaaaaafasdfasdfasdf", "8002", "7", "3")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
-	_, err = addBlock(3,"aaaaaaafasdfasdfasdf", "8003","10","2")
+	_, err = addBlock(3, "aaaaaaafasdfasdfasdf", "8003", "10", "2")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
-	_, err = addBlock(4,"aaaaaaafasdfasdfasdf", "8004","15","2")
+	_, err = addBlock(4, "aaaaaaafasdfasdfasdf", "8004", "15", "2")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
-	_, err = addBlock(5,"aaaaaaafasdfasdfasdf", "8005","1","21")
+	_, err = addBlock(5, "aaaaaaafasdfasdfasdf", "8005", "1", "21")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
-	_, err = addBlock(6,"aaaaaaafasdfasdfasdf", "8006","10","22")
+	_, err = addBlock(6, "aaaaaaafasdfasdfasdf", "8006", "10", "22")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
-	_, err = addBlock(7,"aaaaaaafasdfasdfasdf", "8007","18","21")
+	_, err = addBlock(7, "aaaaaaafasdfasdfasdf", "8007", "18", "21")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
-	_, err = addBlock(8,"aaaaaaafasdfasdfasdf", "8008","4","9")
+	_, err = addBlock(8, "aaaaaaafasdfasdfasdf", "8008", "4", "9")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
-	_, err = addBlock(9,"aaaaaaafasdfasdfasdf", "8009","12","22")
+	_, err = addBlock(9, "aaaaaaafasdfasdfasdf", "8009", "12", "22")
 	if err != nil {
-		log.Printf("[error]:%v",err)
+		log.Printf("[error]:%v", err)
 	}
 	for _, e := range BlockChain {
 		fmt.Println(e)
@@ -118,22 +116,21 @@ func main() {
 
 	err = InitDist()
 	if err != nil {
-		log.Printf("[Error]:%v",err)
+		log.Printf("[Error]:%v", err)
 	} else {
 		log.Printf("[Info]:init dist successful\n")
 	}
 
-	idx,_ := strconv.Atoi(Index)
+	idx, _ := strconv.Atoi(Index)
 	fmt.Println(Index)
 	BlockChain[idx].Type = 2
 	err = BlockChain[idx].SendRecvReq()
 	if err != nil {
-		log.Printf("[Error]:%v",err)
+		log.Printf("[Error]:%v", err)
 	} else {
 		log.Printf("[Info]:OK\n")
 	}
 
 	service.StartHttpService(Port)
-
 
 }

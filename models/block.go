@@ -53,7 +53,7 @@ func (b *Block) SendRecvReq() error {
 		return err
 	}
 	log.Printf("[Info]:get top dist successful\n")
-	log.Printf("[Data]:recoverList %v\n",recoverList)
+	log.Printf("[Data]:recoverList %v\n", recoverList)
 	for i := 0; i < len(BlockChain); i++ {
 		if i == b.Index {
 			continue
@@ -74,7 +74,7 @@ func (b *Block) SendRecvReq() error {
 		if err != nil {
 			return err
 		}
-		log.Printf("[Info]:send msg to %v:%v",BlockChain[rq.To].Addr.Ip,BlockChain[rq.To].Addr.Port)
+		log.Printf("[Info]:send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
 	}
 	return nil
 }
@@ -88,8 +88,6 @@ func (b *Block) SendRecvVerifyReq(req RecoverReq) error {
 	if req.Token != "safe token" {
 		flag = false
 	}
-
-
 
 	for _, idx := range req.BlockList {
 		rq := &RecoverVerifyReq{
@@ -207,6 +205,14 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 			}
 			j++
 		}
+		var offsets [3]int64
+		var sizes [3]int64
+		var md5s [3]string
+		for idx, e := range dataSlice {
+			offsets[idx] = e.offset
+			sizes[idx] = e.size
+			md5s[idx] = e.md5
+		}
 
 		rq := &RecoverMd5Req{
 			BaseMessage: BaseMessage{
@@ -216,7 +222,9 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 				MessageName: "SendRecvMd5Req",
 				Timestamp:   time.Now().String(),
 			},
-			dataSlice: dataSlice,
+			offset: offsets,
+			size:   sizes,
+			md5:    md5s,
 		}
 		err := SendMsg(BlockChain[rq.To].Addr, rq)
 		if err != nil {
@@ -228,9 +236,9 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 
 func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 	data := []byte(b.Data)
-	for idx, e := range req.dataSlice {
-		dataSlc := data[e.offset : e.offset+e.size]
-		req.dataSlice[idx].md5 = fmt.Sprintf("%v", md5.Sum(dataSlc))
+	for idx, e := range req.size {
+		dataSlc := data[req.offset[idx] : req.offset[idx]+e]
+		req.md5[idx] = fmt.Sprintf("%v", md5.Sum(dataSlc))
 	}
 
 	rq := &RecoverMd5Res{
@@ -241,7 +249,9 @@ func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 			MessageName: "SendRecvMd5Res",
 			Timestamp:   time.Now().String(),
 		},
-		dataSlice: req.dataSlice,
+		size:   req.size,
+		offset: req.offset,
+		md5:    req.md5,
 	}
 	err := SendMsg(BlockChain[rq.To].Addr, rq)
 	if err != nil {
