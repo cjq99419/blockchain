@@ -111,7 +111,7 @@ func main() {
 	//idx,_ := strconv.Atoi(Index)
 	//fmt.Println(Index)
 	//BlockChain[idx].Type = 2
-	//err = BlockChain[idx].RecvReq()
+	//err = BlockChain[idx].SendRecvReq()
 	//if err != nil {
 	//	log.Printf("[Error]:%v",err)
 	//} else {
