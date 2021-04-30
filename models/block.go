@@ -153,14 +153,12 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 	map1 := make(map[int]int)
 	map2 := make(map[int]int)
 	map3 := make(map[int]int)
-	fmt.Println("aa")
 	for i := 0; i < sliceNum; i++ {
 		map1[i] = i
 		map2[i] = i
 		map3[i] = i
 	}
 
-	fmt.Println("bb")
 	for i := 0; i < len(res); i++ {
 		sliceTmp := make(map[int]int)
 		for key := range map1 {
@@ -194,20 +192,20 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 		sliceSize := res[0].Size / 10
 
 		var dataSlice [3]DataSlice
-		var i int
+		var j int
 		for key := range sliceTmp {
 			if key != len(res)-1 {
-				dataSlice[i] = DataSlice{
+				dataSlice[j] = DataSlice{
 					offset: int64(key) * sliceSize,
 					size:   sliceSize,
 				}
 			} else {
-				dataSlice[i] = DataSlice{
+				dataSlice[j] = DataSlice{
 					offset: int64(key) * sliceSize,
 					size:   res[0].Size - int64(key)*sliceSize,
 				}
 			}
-			i++
+			j++
 		}
 
 		rq := &RecoverMd5Req{
@@ -225,7 +223,6 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 			return err
 		}
 	}
-	fmt.Println("ccc")
 	return nil
 }
 
