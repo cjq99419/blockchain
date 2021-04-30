@@ -108,15 +108,15 @@ func main() {
 		log.Printf("[Info]:init dist successful\n")
 	}
 
-	//idx,_ := strconv.Atoi(Index)
-	//fmt.Println(Index)
-	//BlockChain[idx].Type = 2
-	//err = BlockChain[idx].RecvReq()
-	//if err != nil {
-	//	log.Printf("[Error]:%v",err)
-	//} else {
-	//	log.Printf("[Info]:OK\n")
-	//}
+	idx,_ := strconv.Atoi(Index)
+	fmt.Println(Index)
+	BlockChain[idx].Type = 2
+	err = BlockChain[idx].RecvReq()
+	if err != nil {
+		log.Printf("[Error]:%v",err)
+	} else {
+		log.Printf("[Info]:OK\n")
+	}
 
 	service.StartHttpService(Port)
 
