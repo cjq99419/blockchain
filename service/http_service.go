@@ -8,6 +8,8 @@ import (
 	"net"
 )
 
+var RecvNum int
+
 func StartHttpService(port string) error{
 	localAddress, _ := net.ResolveTCPAddr("tcp4", fmt.Sprintf("127.0.0.1:%v",port))//定义一个本机IP和端口。
 	var tcpListener, err = net.ListenTCP("tcp", localAddress)       //在刚定义好的地址上进监听请求。
@@ -29,7 +31,7 @@ func StartHttpService(port string) error{
 		if err != nil {
 			return err
 		}
-		log.Printf("[Info]:get message :%v",bys)
+		log.Printf("[Info]:get message :%v",string(bys))
 
 		// 服务转发
 		err = forward(bys)
@@ -63,6 +65,10 @@ func forward(data []byte) error {
 		err = ServeRecvVerifyReq(data)
 	case "SendRecvRes":
 		err = ServeRecvRes(data)
+	case "SendRecvMd5Req":
+		err = ServeRecvMd5Req(data)
+	case "SendRecvMd5Res":
+		err = ServeRecvMd5Res(data)
 	}
 
 
