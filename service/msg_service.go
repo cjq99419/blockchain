@@ -128,8 +128,6 @@ func ServeRecvMd5Res(data []byte) error {
 	//	return err
 	//}
 	RecvMd5ResList = append(RecvMd5ResList, *res)
-	log.Println(RecvNum)
-	log.Println(len(RecvMd5ResList))
 	if RecvNum == len(RecvMd5ResList) {
 		for i := 0; i < RecvNum; i++ {
 			fmt.Println(RecvMd5ResList[i])

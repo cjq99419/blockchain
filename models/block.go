@@ -222,9 +222,9 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 				MessageName: "SendRecvMd5Req",
 				Timestamp:   time.Now().String(),
 			},
-			offset: offsets,
-			size:   sizes,
-			md5:    md5s,
+			Offset: offsets[:],
+			Size:   sizes[:],
+			Md5:    md5s[:],
 		}
 		err := SendMsg(BlockChain[rq.To].Addr, rq)
 		if err != nil {
@@ -236,9 +236,9 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 
 func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 	data := []byte(b.Data)
-	for idx, e := range req.size {
-		dataSlc := data[req.offset[idx] : req.offset[idx]+e]
-		req.md5[idx] = fmt.Sprintf("%v", md5.Sum(dataSlc))
+	for idx, e := range req.Size {
+		dataSlc := data[req.Offset[idx] : req.Offset[idx]+e]
+		req.Md5[idx] = fmt.Sprintf("%v", md5.Sum(dataSlc))
 	}
 
 	rq := &RecoverMd5Res{
@@ -249,9 +249,9 @@ func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 			MessageName: "SendRecvMd5Res",
 			Timestamp:   time.Now().String(),
 		},
-		size:   req.size,
-		offset: req.offset,
-		md5:    req.md5,
+		Size:   req.Size,
+		Offset: req.Offset,
+		Md5:    req.Md5,
 	}
 	err := SendMsg(BlockChain[rq.To].Addr, rq)
 	if err != nil {

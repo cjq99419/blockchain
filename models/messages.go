@@ -53,16 +53,16 @@ type RecoverRes struct {
 
 type RecoverMd5Req struct {
 	BaseMessage
-	offset [3]int64
-	size   [3]int64
-	md5    [3]string
+	Offset []int64
+	Size   []int64
+	Md5    []string
 }
 
 type RecoverMd5Res struct {
 	BaseMessage
-	offset [3]int64
-	size   [3]int64
-	md5    [3]string
+	Offset []int64
+	Size   []int64
+	Md5    []string
 }
 
 type VerifyMd5Req struct {
