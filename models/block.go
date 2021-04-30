@@ -54,7 +54,7 @@ func (b *Block) RecvReq() error {
 	}
 	log.Printf("[Info]:get top dist successful\n")
 	log.Printf("[Data]:recoverList %v\n",recoverList)
-	for i := 0; i < recoverNum; i++ {
+	for i := 0; i < len(BlockChain); i++ {
 		if i == b.Index {
 			continue
 		}
@@ -62,7 +62,7 @@ func (b *Block) RecvReq() error {
 			BaseMessage: BaseMessage{
 				MessageId:   GetRandomId(),
 				From:        b.Index,
-				To:          BlockChain[recoverList[i]].Index,
+				To:          BlockChain[i].Index,
 				MessageName: "RecvReq",
 				Timestamp:   time.Now().String(),
 			},
