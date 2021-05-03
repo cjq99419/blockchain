@@ -42,7 +42,7 @@ type Block struct {
 // 2 call
 func (b *Block) SendRecvReq() error {
 	if b.Type != 2 {
-		return errors.New("block is not to be recovered")
+		return errors.New("Block is not to be recovered")
 	}
 	b.Token = "safe token"
 
@@ -52,8 +52,8 @@ func (b *Block) SendRecvReq() error {
 	if err != nil {
 		return err
 	}
-	log.Printf("[Info]:get top dist successful\n")
-	log.Printf("[Data]:recoverList %v\n", recoverList)
+	log.Printf("[Info]:Get top dist successful\n")
+	log.Printf("[Data]:RecoverList %v\n", recoverList)
 	for i := 0; i < len(BlockChain); i++ {
 		if i == b.Index {
 			continue
@@ -74,7 +74,7 @@ func (b *Block) SendRecvReq() error {
 		if err != nil {
 			return err
 		}
-		log.Printf("[Info]:send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
+		log.Printf("[Info]:Send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
 	}
 	return nil
 }
@@ -82,7 +82,7 @@ func (b *Block) SendRecvReq() error {
 // 0+1 call
 func (b *Block) SendRecvVerifyReq(req RecoverReq) error {
 	if b.Type == 2 {
-		return errors.New("block is not allowed to send recover verify request")
+		return errors.New("Block is not allowed to send recover verify request")
 	}
 	flag := true
 	if req.Token != "safe token" {
@@ -103,10 +103,9 @@ func (b *Block) SendRecvVerifyReq(req RecoverReq) error {
 			RecvBlock: req.From,
 			BlockList: req.BlockList,
 		}
-
 		BlockChain[idx].Type = 1
-
 		err := SendMsg(BlockChain[rq.To].Addr, rq)
+		log.Printf("[Info]:Send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
 		if err != nil {
 			return err
 		}
@@ -117,10 +116,10 @@ func (b *Block) SendRecvVerifyReq(req RecoverReq) error {
 // 1 call
 func (b *Block) SendRecvRes(req []RecoverVerifyReq) error {
 	if b.Type != 1 {
-		return errors.New("block is not recover node")
+		return errors.New("Block is not recover node")
 	}
 	if len(req)*3 < len(req[0].BlockList)*2 {
-		return errors.New("do not get enough verify replay")
+		return errors.New("Do not get enough verify replay")
 	}
 
 	rq := &RecoverRes{
@@ -137,6 +136,7 @@ func (b *Block) SendRecvRes(req []RecoverVerifyReq) error {
 	}
 
 	err := SendMsg(BlockChain[rq.To].Addr, rq)
+	log.Printf("[Info]:Send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
 	if err != nil {
 		return err
 	}
@@ -145,7 +145,7 @@ func (b *Block) SendRecvRes(req []RecoverVerifyReq) error {
 
 func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 	if len(res) != len(res[0].BlockList) {
-		return errors.New("do not get enough recover replay")
+		return errors.New("Do not get enough recover replay")
 	}
 	sliceNum := len(res[0].BlockList)
 	map1 := make(map[int]int)
@@ -227,6 +227,7 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 			Md5:    md5s[:],
 		}
 		err := SendMsg(BlockChain[rq.To].Addr, rq)
+		log.Printf("[Info]:Send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
 		if err != nil {
 			return err
 		}
@@ -254,6 +255,7 @@ func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 		Md5:    req.Md5,
 	}
 	err := SendMsg(BlockChain[rq.To].Addr, rq)
+	log.Printf("[Info]:Send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
 	if err != nil {
 		return err
 	}

@@ -64,51 +64,51 @@ func addBlock(idx int, data string, port string, lon string, lat string) (Block,
 
 func main() {
 	if len(os.Args) < 2 {
-		log.Println("[error]:port is not found")
+		log.Println("[Error]:port is not found")
 	}
-	Index = "9"
+	Index = "8"
 	Port = fmt.Sprintf("800%v", Index)
 
 	var err error
 	_, err = addBlock(0, "aaaaaaafasdfasdfasdf", "8000", "1", "2")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	_, err = addBlock(1, "aaaaaaafasdfasdfasdf", "8001", "2", "6")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	_, err = addBlock(2, "aaaaaaafasdfasdfasdf", "8002", "7", "3")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	_, err = addBlock(3, "aaaaaaafasdfasdfasdf", "8003", "10", "2")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	_, err = addBlock(4, "aaaaaaafasdfasdfasdf", "8004", "15", "2")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	_, err = addBlock(5, "aaaaaaafasdfasdfasdf", "8005", "1", "21")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	_, err = addBlock(6, "aaaaaaafasdfasdfasdf", "8006", "10", "22")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	_, err = addBlock(7, "aaaaaaafasdfasdfasdf", "8007", "18", "21")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	_, err = addBlock(8, "aaaaaaafasdfasdfasdf", "8008", "4", "9")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	_, err = addBlock(9, "aaaaaaafasdfasdfasdf", "8009", "12", "22")
 	if err != nil {
-		log.Printf("[error]:%v", err)
+		log.Printf("[Error]:%v", err)
 	}
 	for _, e := range BlockChain {
 		fmt.Println(e)
@@ -121,15 +121,15 @@ func main() {
 		log.Printf("[Info]:init dist successful\n")
 	}
 
-	idx, _ := strconv.Atoi(Index)
-	fmt.Println(Index)
-	BlockChain[idx].Type = 2
-	err = BlockChain[idx].SendRecvReq()
-	if err != nil {
-		log.Printf("[Error]:%v", err)
-	} else {
-		log.Printf("[Info]:OK\n")
-	}
+	//idx, _ := strconv.Atoi(Index)
+	//fmt.Println(Index)
+	//BlockChain[idx].Type = 2
+	//err = BlockChain[idx].SendRecvReq()
+	//if err != nil {
+	//	log.Printf("[Error]:%v", err)
+	//} else {
+	//	log.Printf("[Info]:OK\n")
+	//}
 
 	service.StartHttpService(Port)
 

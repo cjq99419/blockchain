@@ -24,8 +24,6 @@ func ServeRecvReq(data []byte) error {
 	if err != nil {
 		return err
 	}
-
-	log.Printf("[Info]:unmarshal ok %v", req)
 	err = models.BlockChain[idx].SendRecvVerifyReq(*req)
 	if err != nil {
 		return err

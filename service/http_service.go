@@ -19,33 +19,32 @@ func StartHttpService(port string) error {
 	defer func() { //担心return之前忘记关闭连接，因此在defer中先约定好关它。
 		tcpListener.Close()
 	}()
-	log.Printf("[Info]:start listen")
+	log.Printf("[Info]:Start listen to 127.0.0.1:%v",port)
 	for {
 		var conn, err = tcpListener.AcceptTCP() //接受连接。
 		if err != nil {
 			return err
 		}
 		var remoteAddr = conn.RemoteAddr() //获取连接到的对像的IP地址。
-		log.Printf("[Info]:connect to %v", remoteAddr.String())
+		log.Printf("[Info]:Connect to %v", remoteAddr.String())
 		bys, err := ioutil.ReadAll(conn) //读取对方发来的内容。
 		if err != nil {
 			return err
 		}
-		log.Printf("[Info]:get message :%v", string(bys))
+		log.Printf("[Info]:Get message from %v", remoteAddr.String())
 
 		// 服务转发
 		err = forward(bys)
 		if err != nil {
-			log.Printf("[err]:%v", err)
+			log.Printf("[Error]:%v", err)
 		}
-		conn.Write([]byte("hello, Nice to meet you, my name is SongXingzhu")) //尝试发送消息。
 		conn.Close()
 	}
 
 }
 
 func forward(data []byte) error {
-	log.Printf("[Info]:start forward")
+	log.Printf("[Info]:Start service forward")
 	rev := make(map[string]interface{})
 	var err error
 
@@ -53,8 +52,7 @@ func forward(data []byte) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("[Info]:unmarshal ok")
-	log.Printf("[Info]:message name is %v", rev["MessageName"])
+	log.Printf("[Info]:Message name is %v", rev["MessageName"])
 	switch rev["MessageName"].(string) {
 	case "SendRecvReq":
 		err = ServeRecvReq(data)
@@ -69,8 +67,10 @@ func forward(data []byte) error {
 		err = ServeRecvMd5Req(data)
 	case "SendRecvMd5Res":
 		err = ServeRecvMd5Res(data)
+	default:
+		log.Printf("[Warn]:Unknown service")
 	}
-
+	log.Printf("[Info]:Service forward finished")
 	if err != nil {
 		return err
 	}
