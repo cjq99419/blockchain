@@ -66,7 +66,7 @@ func main() {
 	if len(os.Args) < 2 {
 		log.Println("[Error]:port is not found")
 	}
-	Index = "8"
+	Index = os.Args[1]
 	Port = fmt.Sprintf("800%v", Index)
 
 	var err error

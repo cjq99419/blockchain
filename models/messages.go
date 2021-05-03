@@ -15,9 +15,9 @@ type Address struct {
 }
 
 type DataSlice struct {
-	offset int64
-	size   int64
-	md5    string
+	Offset int64
+	Size   int64
+	Md5    string
 }
 
 type BaseMessage struct {
@@ -53,16 +53,12 @@ type RecoverRes struct {
 
 type RecoverMd5Req struct {
 	BaseMessage
-	Offset []int64
-	Size   []int64
-	Md5    []string
+	Slice []DataSlice
 }
 
 type RecoverMd5Res struct {
 	BaseMessage
-	Offset []int64
-	Size   []int64
-	Md5    []string
+	Slice []DataSlice
 }
 
 type VerifyMd5Req struct {

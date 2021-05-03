@@ -3,7 +3,6 @@ package service
 import (
 	"blockchain/models"
 	"encoding/json"
-	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -127,14 +126,24 @@ func ServeRecvMd5Res(data []byte) error {
 	//}
 	RecvMd5ResList = append(RecvMd5ResList, *res)
 	if RecvNum == len(RecvMd5ResList) {
-		for i := 0; i < RecvNum; i++ {
-			fmt.Println(RecvMd5ResList[i])
+		// offset -> md5
+		md5A := make(map[int64]string)
+		md5B := make(map[int64]string)
+		result := make([]models.DataSlice, 0)
+		for _, l := range RecvMd5ResList {
+			for _, slc := range l.Slice {
+				if _, ok := md5A[slc.Offset]; !ok {
+					md5A[slc.Offset] = slc.Md5
+				} else if slc.Md5 == md5A[slc.Offset] {
+					result = append(result, slc)
+				} else if _, ok := md5B[slc.Offset]; !ok {
+					md5B[slc.Offset] = slc.Md5
+				} else if slc.Md5 == md5B[slc.Offset] {
+					result = append(result, slc)
+				}
+			}
 		}
-
-		//err = models.BlockChain[idx].SendRecvMd5Req(RecvResList)
-		//if err != nil {
-		//	return nil
-		//}
+		log.Printf("[Info]:Result list is %v", result)
 		RecvResList = make([]models.RecoverRes, 0)
 	}
 	return nil

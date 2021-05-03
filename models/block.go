@@ -189,29 +189,23 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 
 		sliceSize := res[0].Size / int64(sliceNum)
 
-		var dataSlice [3]DataSlice
+		dataSlice := make([]DataSlice, 0)
+
 		var j int
 		for key := range sliceTmp {
+			dataSlice = append(dataSlice, DataSlice{})
 			if key != len(res)-1 {
 				dataSlice[j] = DataSlice{
-					offset: int64(key) * sliceSize,
-					size:   sliceSize,
+					Offset: int64(key) * sliceSize,
+					Size:   sliceSize,
 				}
 			} else {
 				dataSlice[j] = DataSlice{
-					offset: int64(key) * sliceSize,
-					size:   res[0].Size - int64(key)*sliceSize,
+					Offset: int64(key) * sliceSize,
+					Size:   res[0].Size - int64(key)*sliceSize,
 				}
 			}
 			j++
-		}
-		var offsets [3]int64
-		var sizes [3]int64
-		var md5s [3]string
-		for idx, e := range dataSlice {
-			offsets[idx] = e.offset
-			sizes[idx] = e.size
-			md5s[idx] = e.md5
 		}
 
 		rq := &RecoverMd5Req{
@@ -222,9 +216,7 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 				MessageName: "SendRecvMd5Req",
 				Timestamp:   time.Now().String(),
 			},
-			Offset: offsets[:],
-			Size:   sizes[:],
-			Md5:    md5s[:],
+			Slice: dataSlice,
 		}
 		err := SendMsg(BlockChain[rq.To].Addr, rq)
 		log.Printf("[Info]:Send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
@@ -237,9 +229,9 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 
 func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 	data := []byte(b.Data)
-	for idx, e := range req.Size {
-		dataSlc := data[req.Offset[idx] : req.Offset[idx]+e]
-		req.Md5[idx] = fmt.Sprintf("%v", md5.Sum(dataSlc))
+	for idx, e := range req.Slice {
+		dataSlc := data[e.Offset : e.Offset+e.Size]
+		req.Slice[idx].Md5 = fmt.Sprintf("%v", md5.Sum(dataSlc))
 	}
 
 	rq := &RecoverMd5Res{
@@ -250,9 +242,7 @@ func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 			MessageName: "SendRecvMd5Res",
 			Timestamp:   time.Now().String(),
 		},
-		Size:   req.Size,
-		Offset: req.Offset,
-		Md5:    req.Md5,
+		Slice: req.Slice,
 	}
 	err := SendMsg(BlockChain[rq.To].Addr, rq)
 	log.Printf("[Info]:Send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
