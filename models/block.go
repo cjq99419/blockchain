@@ -159,32 +159,48 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 	}
 
 	for i := 0; i < len(res); i++ {
+		var m1 int
+		var m2 int
+		var m3 int
 		sliceTmp := make(map[int]int)
-		for key := range map1 {
-			if _, ok := sliceTmp[key]; ok {
-				continue
-			} else {
-				sliceTmp[key] = key
-				delete(map1, key)
-				break
+		for {
+			for key := range map1 {
+				if _, ok := sliceTmp[key]; ok {
+					continue
+				} else {
+					sliceTmp[key] = key
+					m1 = key
+					//delete(map1, key)
+					break
+				}
 			}
-		}
-		for key := range map2 {
-			if _, ok := sliceTmp[key]; ok {
-				continue
-			} else {
-				sliceTmp[key] = key
-				delete(map2, key)
-				break
+			for key := range map2 {
+				if _, ok := sliceTmp[key]; ok {
+					continue
+				} else {
+					sliceTmp[key] = key
+					m2 = key
+					//delete(map2, key)
+					break
+				}
 			}
-		}
-		for key := range map3 {
-			if _, ok := sliceTmp[key]; ok {
-				continue
-			} else {
-				sliceTmp[key] = key
-				delete(map3, key)
+			for key := range map3 {
+				if _, ok := sliceTmp[key]; ok {
+					continue
+				} else {
+					sliceTmp[key] = key
+					m3 = key
+					//delete(map3, key)
+					break
+				}
+			}
+			if len(sliceTmp) == 3 {
+				delete(map1, m1)
+				delete(map2, m2)
+				delete(map3, m3)
 				break
+			} else {
+				sliceTmp = make(map[int]int)
 			}
 		}
 

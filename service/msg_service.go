@@ -130,34 +130,42 @@ func ServeRecvMd5Res(data []byte) error {
 		md5A := make(map[int64]string)
 		md5B := make(map[int64]string)
 		reqs := make([]models.DownloadReq, 0)
+		reqSet := make(map[int64]int)
 		for _, l := range RecvMd5ResList {
 			for _, slc := range l.Slices {
 				if _, ok := md5A[slc.Offset]; !ok {
 					md5A[slc.Offset] = slc.Md5
 				} else if slc.Md5 == md5A[slc.Offset] {
-					reqs = append(reqs, models.DownloadReq{
-						BaseMessage: models.BaseMessage{
-							MessageId:   models.GetRandomId(),
-							From:        res.To,
-							To:          l.From,
-							MessageName: "DownloadReq",
-							Timestamp:   time.Now().String(),
-						},
-						Slice: slc,
-					})
+					if _, ok := reqSet[slc.Offset]; !ok {
+						reqs = append(reqs, models.DownloadReq{
+							BaseMessage: models.BaseMessage{
+								MessageId:   models.GetRandomId(),
+								From:        res.To,
+								To:          l.From,
+								MessageName: "DownloadReq",
+								Timestamp:   time.Now().String(),
+							},
+							Slice: slc,
+						})
+						reqSet[slc.Offset] = 1
+					}
+
 				} else if _, ok := md5B[slc.Offset]; !ok {
 					md5B[slc.Offset] = slc.Md5
 				} else if slc.Md5 == md5B[slc.Offset] {
-					reqs = append(reqs, models.DownloadReq{
-						BaseMessage: models.BaseMessage{
-							MessageId:   models.GetRandomId(),
-							From:        res.To,
-							To:          l.From,
-							MessageName: "DownloadReq",
-							Timestamp:   time.Now().String(),
-						},
-						Slice: slc,
-					})
+					if _, ok := reqSet[slc.Offset]; !ok {
+						reqs = append(reqs, models.DownloadReq{
+							BaseMessage: models.BaseMessage{
+								MessageId:   models.GetRandomId(),
+								From:        res.To,
+								To:          l.From,
+								MessageName: "DownloadReq",
+								Timestamp:   time.Now().String(),
+							},
+							Slice: slc,
+						})
+						reqSet[slc.Offset] = 1
+					}
 				}
 			}
 		}

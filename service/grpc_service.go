@@ -9,6 +9,8 @@ import (
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
+	"sort"
+	"strconv"
 	"time"
 )
 
@@ -68,21 +70,45 @@ func (*DownloadServer) Download(req *proto.DownloadReq, downloadServer proto.Dow
 
 func GRPCDataService(reqs []models.DownloadReq) error {
 	log.Printf("[Info]:Start grpc service")
-	log.Println(reqs)
 	DataArr = make(map[int64][]byte)
+	//wg := sync.WaitGroup{}
 	for _, req := range reqs {
-		go func() {
-			err := gRPCDownload(req)
-			if err != nil {
-				log.Printf("[Error]:%v", err)
-			}
-		}()
+		//go func(wg *sync.WaitGroup) {
+		//	wg.Add(1)
+		//	defer wg.Done()
+		err := gRPCDownload(req)
+		if err != nil {
+			log.Printf("[Error]:%v", err)
+		}
+		//	}(&wg)
+		//}
+		//wg.Wait()
 	}
+	return dataRecovery()
+}
+
+func dataRecovery() error {
+	keys := make([]int,0)
+	for k := range DataArr {
+		keys = append(keys, int(k))
+	}
+	sort.Ints(keys)
+	data := make([]byte,0)
+	for _, key := range keys {
+		data = append(data, DataArr[int64(key)]...)
+	}
+
+	idx,err := strconv.Atoi(models.Index)
+	if err != nil {
+		return err
+	}
+	models.BlockChain[idx].Data = string(data)
+	log.Printf("[Info]:Recovery successful!")
 	return nil
 }
 
 func gRPCDownload(req models.DownloadReq) error {
-	grpcConn, err := grpc.Dial(models.BlockChain[req.To].Addr.Ip+":"+models.BlockChain[req.To].Addr.Port, grpc.WithInsecure())
+	grpcConn, err := grpc.Dial(models.BlockChain[req.To].Addr.Ip+":"+fmt.Sprintf("801%v",models.BlockChain[req.To].Addr.Port[len(models.BlockChain[req.To].Addr.Port) - 1:]), grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
@@ -125,6 +151,5 @@ func gRPCDownload(req models.DownloadReq) error {
 		}
 	}
 	DataArr[req.Slice.Offset] = data
-	log.Println("download over~")
 	return nil
 }
