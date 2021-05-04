@@ -21,7 +21,7 @@ func StartGRPCService(port string) error {
 	if err != nil {
 		return err
 	}
-
+	log.Printf("[Info]:Start grpc listen to 127.0.0.1:%v", port)
 	//构建一个新的服务端对象
 	s := grpc.NewServer()
 	//向这个服务端对象注册服务

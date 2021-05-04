@@ -133,9 +133,8 @@ func main() {
 	//	log.Printf("[Info]:OK\n")
 	//}
 	wg := sync.WaitGroup{}
-
+	wg.Add(2)
 	go func(wg *sync.WaitGroup) {
-		wg.Add(1)
 		defer wg.Done()
 		err = service.StartHttpService(HTTPPort)
 		if err != nil {
@@ -144,7 +143,6 @@ func main() {
 	}(&wg)
 
 	go func(wg *sync.WaitGroup) {
-		wg.Add(1)
 		defer wg.Done()
 		err = service.StartGRPCService(GRPCPort)
 		if err != nil {

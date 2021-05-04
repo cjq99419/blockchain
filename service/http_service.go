@@ -19,7 +19,7 @@ func StartHttpService(port string) error {
 	defer func() { //担心return之前忘记关闭连接，因此在defer中先约定好关它。
 		tcpListener.Close()
 	}()
-	log.Printf("[Info]:Start listen to 127.0.0.1:%v", port)
+	log.Printf("[Info]:Start http listen to 127.0.0.1:%v", port)
 	for {
 		var conn, err = tcpListener.AcceptTCP() //接受连接。
 		if err != nil {
