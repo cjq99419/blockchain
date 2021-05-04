@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -131,15 +132,26 @@ func main() {
 	//} else {
 	//	log.Printf("[Info]:OK\n")
 	//}
+	wg := sync.WaitGroup{}
 
-	err = service.StartHttpService(HTTPPort)
-	if err != nil {
-		log.Printf("[Error]:%v", err)
-	}
+	go func(wg *sync.WaitGroup) {
+		wg.Add(1)
+		defer wg.Done()
+		err = service.StartHttpService(HTTPPort)
+		if err != nil {
+			log.Printf("[Error]:%v", err)
+		}
+	}(&wg)
 
-	err = service.StartGRPCService(GRPCPort)
-	if err != nil {
-		log.Printf("[Error]:%v", err)
-	}
+	go func(wg *sync.WaitGroup) {
+		wg.Add(1)
+		defer wg.Done()
+		err = service.StartGRPCService(GRPCPort)
+		if err != nil {
+			log.Printf("[Error]:%v", err)
+		}
+	}(&wg)
+
+	wg.Wait()
 
 }
