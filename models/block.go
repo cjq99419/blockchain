@@ -8,7 +8,8 @@ import (
 	"time"
 )
 
-var Port string
+var HTTPPort string
+var GRPCPort string
 var Index string
 
 var BlockChain []Block
@@ -216,7 +217,7 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 				MessageName: "SendRecvMd5Req",
 				Timestamp:   time.Now().String(),
 			},
-			Slice: dataSlice,
+			Slices: dataSlice,
 		}
 		err := SendMsg(BlockChain[rq.To].Addr, rq)
 		log.Printf("[Info]:Send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)
@@ -229,9 +230,9 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 
 func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 	data := []byte(b.Data)
-	for idx, e := range req.Slice {
+	for idx, e := range req.Slices {
 		dataSlc := data[e.Offset : e.Offset+e.Size]
-		req.Slice[idx].Md5 = fmt.Sprintf("%v", md5.Sum(dataSlc))
+		req.Slices[idx].Md5 = fmt.Sprintf("%v", md5.Sum(dataSlc))
 	}
 
 	rq := &RecoverMd5Res{
@@ -242,7 +243,7 @@ func (b *Block) SendRecvMd5Res(req RecoverMd5Req) error {
 			MessageName: "SendRecvMd5Res",
 			Timestamp:   time.Now().String(),
 		},
-		Slice: req.Slice,
+		Slices: req.Slices,
 	}
 	err := SendMsg(BlockChain[rq.To].Addr, rq)
 	log.Printf("[Info]:Send msg to %v:%v", BlockChain[rq.To].Addr.Ip, BlockChain[rq.To].Addr.Port)

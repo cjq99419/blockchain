@@ -67,7 +67,8 @@ func main() {
 		log.Println("[Error]:port is not found")
 	}
 	Index = os.Args[1]
-	Port = fmt.Sprintf("800%v", Index)
+	HTTPPort = fmt.Sprintf("800%v", Index)
+	GRPCPort = fmt.Sprintf("801%v", Index)
 
 	var err error
 	_, err = addBlock(0, "aaaaaaafasdfasdfasdf", "8000", "1", "2")
@@ -131,6 +132,14 @@ func main() {
 	//	log.Printf("[Info]:OK\n")
 	//}
 
-	service.StartHttpService(Port)
+	err = service.StartHttpService(HTTPPort)
+	if err != nil {
+		log.Printf("[Error]:%v", err)
+	}
+
+	err = service.StartGRPCService(GRPCPort)
+	if err != nil {
+		log.Printf("[Error]:%v", err)
+	}
 
 }

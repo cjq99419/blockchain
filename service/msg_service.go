@@ -129,22 +129,41 @@ func ServeRecvMd5Res(data []byte) error {
 		// offset -> md5
 		md5A := make(map[int64]string)
 		md5B := make(map[int64]string)
-		result := make([]models.DataSlice, 0)
+		reqs := make([]models.DownloadReq, 0)
 		for _, l := range RecvMd5ResList {
-			for _, slc := range l.Slice {
+			for _, slc := range l.Slices {
 				if _, ok := md5A[slc.Offset]; !ok {
 					md5A[slc.Offset] = slc.Md5
 				} else if slc.Md5 == md5A[slc.Offset] {
-					result = append(result, slc)
+					reqs = append(reqs, models.DownloadReq{
+						BaseMessage: models.BaseMessage{
+							MessageId:   models.GetRandomId(),
+							From:        res.To,
+							To:          l.From,
+							MessageName: "DownloadReq",
+							Timestamp:   time.Now().String(),
+						},
+						Slice: slc,
+					})
 				} else if _, ok := md5B[slc.Offset]; !ok {
 					md5B[slc.Offset] = slc.Md5
 				} else if slc.Md5 == md5B[slc.Offset] {
-					result = append(result, slc)
+					reqs = append(reqs, models.DownloadReq{
+						BaseMessage: models.BaseMessage{
+							MessageId:   models.GetRandomId(),
+							From:        res.To,
+							To:          l.From,
+							MessageName: "DownloadReq",
+							Timestamp:   time.Now().String(),
+						},
+						Slice: slc,
+					})
 				}
 			}
 		}
-		log.Printf("[Info]:Result list is %v", result)
-		RecvResList = make([]models.RecoverRes, 0)
+		log.Printf("[Info]:Request list is %v", reqs)
+
+		err = GRPCDataService(reqs)
 	}
 	return nil
 }

@@ -1,43 +1,32 @@
-//指定使用proto3（proto2，3有很多不同，不可混写）
 syntax = "proto3";
-//指定生成的go_package,简单来说就是生成的go代码使用什么包，即package proto
-option go_package = ".;proto";
+option go_package = "./;proto";
 
-//定义rpc服务
-//此处rpc服务的定义，一定要从服务端的角度考虑，即接受请求，处理请求并返回响应的一端
-//请求接受一个LoginReq（username+password)
-//响应回发一条msg（"true" or "false")
-service Login{
-  rpc Login(LoginReq)returns(LoginRes){}
+//下载服务
+//请求接受一个DownloadReq（username+password)
+//响应回发多条数据（"true" or "false")
+service Download{
+  rpc Download(DownloadReq)returns(stream DownloadRes){}
 }
 
-message Base {
-  string Id = 1;
-  string FId = 2;
-  string TId = 3;
+message  BaseMessage {
+  string MessageId = 1;
+  int32 From = 2;
+  int32 To = 3;
 
-  string Name = 4;
+  string MessageName = 4;
 
-  string Time = 5;
+  string Timestamp = 5;
 }
 
-message RecoverReq {
-  Base msg = 1;
-  string token = 2;
-  repeated string BlockList = 3;
+message DownloadReq {
+  BaseMessage base = 1;
+  int64 offset = 2;
+  int64 size = 3;
 }
 
-message RecoverVerifyReq {
-  Base msg = 1;
-  string token = 2;
-  repeated string BlockList = 3;
+message DownloadRes {
+  BaseMessage base = 1;
+  int64 offset = 2;
+  int64 size = 3;
+  bytes data = 4;
 }
-
-message RecoverRes {
-  Base msg = 1;
-  string ReqId = 2;
-}
-
-message RecoverMd5Req struct {
-
-    }

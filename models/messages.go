@@ -53,12 +53,23 @@ type RecoverRes struct {
 
 type RecoverMd5Req struct {
 	BaseMessage
-	Slice []DataSlice
+	Slices []DataSlice
 }
 
 type RecoverMd5Res struct {
 	BaseMessage
-	Slice []DataSlice
+	Slices []DataSlice
+}
+
+type DownloadReq struct {
+	BaseMessage
+	Slice DataSlice
+}
+
+type DownloadRes struct {
+	BaseMessage
+	Slice DataSlice
+	Data  []byte
 }
 
 type VerifyMd5Req struct {
