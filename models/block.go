@@ -191,22 +191,18 @@ func (b *Block) SendRecvMd5Req(res []RecoverRes) error {
 		sliceSize := res[0].Size / int64(sliceNum)
 
 		dataSlice := make([]DataSlice, 0)
-
-		var j int
 		for key := range sliceTmp {
-			dataSlice = append(dataSlice, DataSlice{})
 			if key != len(res)-1 {
-				dataSlice[j] = DataSlice{
+				dataSlice = append(dataSlice,DataSlice{
 					Offset: int64(key) * sliceSize,
 					Size:   sliceSize,
-				}
+				})
 			} else {
-				dataSlice[j] = DataSlice{
+				dataSlice = append(dataSlice,DataSlice{
 					Offset: int64(key) * sliceSize,
 					Size:   res[0].Size - int64(key)*sliceSize,
-				}
+				})
 			}
-			j++
 		}
 
 		rq := &RecoverMd5Req{

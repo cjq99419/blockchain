@@ -67,7 +67,7 @@ func main() {
 	if len(os.Args) < 2 {
 		log.Println("[Error]:port is not found")
 	}
-	Index = os.Args[1]
+	Index = "9"
 	HTTPPort = fmt.Sprintf("800%v", Index)
 	GRPCPort = fmt.Sprintf("801%v", Index)
 
@@ -112,9 +112,9 @@ func main() {
 	if err != nil {
 		log.Printf("[Error]:%v", err)
 	}
-	for _, e := range BlockChain {
-		fmt.Println(e)
-	}
+	//for _, e := range BlockChain {
+	//	fmt.Println(e)
+	//}
 
 	err = InitDist()
 	if err != nil {
@@ -123,15 +123,15 @@ func main() {
 		log.Printf("[Info]:init dist successful\n")
 	}
 
-	//idx, _ := strconv.Atoi(Index)
-	//fmt.Println(Index)
-	//BlockChain[idx].Type = 2
-	//err = BlockChain[idx].SendRecvReq()
-	//if err != nil {
-	//	log.Printf("[Error]:%v", err)
-	//} else {
-	//	log.Printf("[Info]:OK\n")
-	//}
+	idx, _ := strconv.Atoi(Index)
+	fmt.Println(Index)
+	BlockChain[idx].Type = 2
+	err = BlockChain[idx].SendRecvReq()
+	if err != nil {
+		log.Printf("[Error]:%v", err)
+	} else {
+		log.Printf("[Info]:OK\n")
+	}
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	go func(wg *sync.WaitGroup) {

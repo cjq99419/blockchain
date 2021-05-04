@@ -68,6 +68,7 @@ func (*DownloadServer) Download(req *proto.DownloadReq, downloadServer proto.Dow
 
 func GRPCDataService(reqs []models.DownloadReq) error {
 	log.Printf("[Info]:Start grpc service")
+	log.Println(reqs)
 	DataArr = make(map[int64][]byte)
 	for _, req := range reqs {
 		go func() {
